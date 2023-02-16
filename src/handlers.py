@@ -10,7 +10,8 @@ class API_handler:
 
     async def get_by_tag(self, tag: str) -> list:
         if tag == 'popular': tag = ''
-        res = requests.get(self.URL + f'random?apiKey={self.key}&tags={tag}&number={self.amount}')
+        res = requests.get(self.URL + f'random', headers={
+            'apiKey': self.key, 'tags': tag, 'number': self.amount})
         return res.json()['recipes']
 
     async def get_by_name(self, query: str) -> list:

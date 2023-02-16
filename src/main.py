@@ -6,19 +6,24 @@ from telebot.async_telebot import AsyncTeleBot
 
 import handlers
 
+
 TOKEN = get_key('../.env', 'TOKEN')
 API_KEY = get_key('../.env', 'API_KEY')
 handler = handlers.API_handler(API_KEY, 5)
 bot = AsyncTeleBot(TOKEN)
+
 
 def create_recipe_markup(rcp_id: str) -> tgTypes.InlineKeyboardMarkup:
     full_recipe = tgTypes.InlineKeyboardButton(
         text = '🛈 more info',
         callback_data = rcp_id
     )
+    
     markup = tgTypes.InlineKeyboardMarkup(row_width=3)
     markup.add(full_recipe)
+
     return markup
+
 
 @bot.callback_query_handler(func = lambda call: True)
 async def get_full_recipe(call: tgTypes.CallbackQuery):
@@ -63,15 +68,13 @@ async def start_bot(msg: tgTypes.Message):
 async def tag_search(msg: tgTypes.BotCommand):
     recipes = await handler.get_by_tag(msg.text[1:])
 
-    for recipe in recipes:
-        markup = create_recipe_markup(str(recipe['id']))
-
-        await bot.send_photo(
+    asyncio.gather(*[bot.send_photo(
             chat_id = msg.chat.id,
             photo = recipe['image'],
             caption = f"{recipe['title']}\n\nDone in {recipe['readyInMinutes']} minutes\nLikes: {recipe['aggregateLikes']}",
-            reply_markup = markup
-        )
+            reply_markup = create_recipe_markup(str(recipe['id']))
+        ) for recipe in recipes]
+    )
 
 @bot.message_handler(commands = ['random'])
 async def get_random(msg: tgTypes.BotCommand):
@@ -91,16 +94,14 @@ async def get_random(msg: tgTypes.BotCommand):
 async def search_by_name(msg: tgTypes.Message):
     query = msg.text.lower()
     recipes = await handler.get_by_name(query)
-
-    for recipe in recipes:
-        markup = create_recipe_markup(str(recipe['id']))
-
-        await bot.send_photo(
+    
+    asyncio.gather(*[bot.send_photo(
             chat_id = msg.chat.id,
             photo = recipe['image'],
             caption = recipe['title'],
-            reply_markup = markup
-        )
+            reply_markup = create_recipe_markup(str(recipe['id']))
+        ) for recipe in recipes]
+    )
 
 if __name__ == '__main__':
     print('Bot started!')
