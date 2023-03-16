@@ -15,7 +15,7 @@ bot = AsyncTeleBot(TOKEN)
 
 def create_recipe_markup(rcp_id: str) -> tgTypes.InlineKeyboardMarkup:
     full_recipe = tgTypes.InlineKeyboardButton(
-        text = '🛈 more info',
+        text = '🔖 Full recipe',
         callback_data = rcp_id
     )
     
@@ -95,13 +95,20 @@ async def search_by_name(msg: tgTypes.Message):
     query = msg.text.lower()
     recipes = await handler.get_by_name(query)
     
-    asyncio.gather(*[bot.send_photo(
+    if recipes == []:
+        await bot.send_message(
             chat_id = msg.chat.id,
-            photo = recipe['image'],
-            caption = recipe['title'],
-            reply_markup = create_recipe_markup(str(recipe['id']))
-        ) for recipe in recipes]
-    )
+            text = f'😕 No results for "{msg.text}"'
+        )
+
+    else:
+        asyncio.gather(*[bot.send_photo(
+                chat_id = msg.chat.id,
+                photo = recipe['image'],
+                caption = recipe['title'],
+                reply_markup = create_recipe_markup(str(recipe['id']))
+            ) for recipe in recipes]
+        )
 
 if __name__ == '__main__':
     print('Bot started!')

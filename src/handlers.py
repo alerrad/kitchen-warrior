@@ -8,22 +8,21 @@ class API_handler:
         self.amount = default_amount
         self.key = api_key
 
-    async def get_by_tag(self, tag: str) -> list:
+    async def get_by_tag(self, tag: str) -> list[dict]:
         if tag == 'popular': tag = ''
-        res = requests.get(self.URL + f'random', headers={
-            'apiKey': self.key, 'tags': tag, 'number': self.amount})
+        res = requests.get(API_handler.URL + f'random?apiKey={self.key}&tag={tag}&number={self.amount}')
         return res.json()['recipes']
 
-    async def get_by_name(self, query: str) -> list:
-        res = requests.get(self.URL + f'complexSearch?apiKey={self.key}&query={query}')
+    async def get_by_name(self, query: str) -> list[dict]:
+        res = requests.get(API_handler.URL + f'complexSearch?apiKey={self.key}&query={query}')
         return res.json()['results']
 
     async def get_by_id(self, rcp_id: str) -> dict:
-        res = requests.get(self.URL + f'{rcp_id}/information?apiKey={self.key}')
+        res = requests.get(API_handler.URL + f'{rcp_id}/information?apiKey={self.key}')
         return res.json()
 
     async def get_random(self) -> dict:
-        res = requests.get(self.URL + f'random?apiKey={self.key}&number=1')
+        res = requests.get(API_handler.URL + f'random?apiKey={self.key}&number=1')
         return res.json()['recipes'][0]
 
     @staticmethod

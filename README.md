@@ -7,7 +7,7 @@ Made with python (telebot external module), with a support of spoonacular API.
 Just simply type in any meal you want to get recipes for, or use built in commands described down below.
 
 Results will be listed separately and contain a brief description of the product.
-To look for ingredients and instructions for a meal, click the ```🛈 more info``` button below the message.
+To look for ingredients and instructions for a meal, click the <kbd>__```🔖 Full recipe```__</kbd> button below the message.
 It will provide the full recipe in an edited message for a meal or send a reply message addressed to a selected meal.
 
 ## List of commands
