@@ -10,7 +10,7 @@ import handlers
 TOKEN = get_key('../.env', 'TOKEN')
 API_KEY = get_key('../.env', 'API_KEY')
 handler = handlers.API_handler(API_KEY, 5)
-bot = AsyncTeleBot(TOKEN)
+bot = AsyncTeleBot(TOKEN, colorful_logs=True)
 
 
 def create_recipe_markup(rcp_id: str) -> tgTypes.InlineKeyboardMarkup:

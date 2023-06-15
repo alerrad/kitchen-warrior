@@ -1,6 +1,7 @@
 import re
 import requests
 
+
 class API_handler:
     URL = 'https://api.spoonacular.com/recipes/'
 
